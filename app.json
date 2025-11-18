@@ -3,11 +3,19 @@
     "name": "Desk Reset",
     "slug": "desk-reset-app",
     "version": "0.1.0",
-    "platforms": ["ios","android","web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "extra": {
       "SUPABASE_URL": "https://lvebhpkdvvbxrvdbptfc.supabase.co",
-      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2ZWJocGtkdnZieHJ2ZGJwdGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NzcyNjAsImV4cCI6MjA3NzQ1MzI2MH0.FigoSpkJg93ZQgvFumNGUUKex7E6R56d8lp4ZfKtrvw"
-    }
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2ZWJocGtkdnZieHJ2ZGJwdGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NzcyNjAsImV4cCI6MjA3NzQ1MzI2MH0.FigoSpkJg93ZQgvFumNGUUKex7E6R56d8lp4ZfKtrvw",
+      "eas": {
+        "projectId": "8323ca4c-dacc-46b4-ac00-23e46fcbced8"
+      }
+    },
+    "owner": "martiankings"
   }
 }
