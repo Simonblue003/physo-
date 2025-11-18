@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Desk Reset",
+    "slug": "desk-reset-app",
+    "version": "0.1.0",
+    "platforms": ["ios","android","web"],
+    "orientation": "portrait",
+    "extra": {
+      "SUPABASE_URL": "REPLACE_WITH_YOUR_SUPABASE_URL",
+      "SUPABASE_ANON_KEY": "REPLACE_WITH_YOUR_SUPABASE_ANON_KEY"
+    }
+  }
+}
