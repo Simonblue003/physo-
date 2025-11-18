@@ -10,7 +10,7 @@ const {
   IOS_BUNDLE_ID = 'com.yourcompany.deskreset'      // <-- REPLACE this
 } = process.env;
 
-module.exports = ({ config }) => {
+module.exports = ({ config }) ; {
   return {
     ...config,
     name: APP_NAME,
