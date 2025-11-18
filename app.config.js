@@ -17,8 +17,13 @@ module.exports = ({ config }) => {
     slug: SLUG,
     version: '0.1.0',
     extra: {
-      SUPABASE_URL: SUPABASE_URL || 'https://replace-with-your-supabase-url',
-      SUPABASE_ANON_KEY: SUPABASE_ANON_KEY || 'replace-with-anon-key'
+      ...(config.extra || {}),
+      // <-- ADD THE EAS PROJECT ID you copied from `npx eas project:init` or expo.dev
+      eas: {
+        projectId: ': 8323ca4c-dacc-46b4-ac00-23e46fcbced8'   // e.g. "0cd3da2d-xxxx-xxxx-xxxx-xxxxxxxxxx"
+      },
+      SUPABASE_URL: process.env.SUPABASE_URL || (config.extra && config.extra.SUPABASE_URL),
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || (config.extra && config.extra.SUPABASE_ANON_KEY),
     },
     ios: {
       bundleIdentifier: IOS_BUNDLE_ID
