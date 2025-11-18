@@ -56,3 +56,26 @@ module.exports = ({ config }) => {
     }
   };
 };
+// app.config.js (add/merge this into the existing returned config)
+module.exports = ({ config }) => {
+  // existing env reads above are fine
+  return {
+    ...config,
+    // ensure plugins includes expo-secure-store
+    plugins: [
+      ...(config.plugins || []),
+      'expo-secure-store'
+    ],
+    // keep extra, ios/android, etc. below...
+    extra: {
+      ...(config.extra || {}),
+      SUPABASE_URL: process.env.SUPABASE_URL || 'replace-me',
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || 'replace-me'
+    },
+    ios: { ...(config.ios || {} ) },
+    android: { ...(config.android || {} ) },
+    web: { ...(config.web || {} ) }
+  };
+};
+
+
