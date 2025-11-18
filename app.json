@@ -6,8 +6,8 @@
     "platforms": ["ios","android","web"],
     "orientation": "portrait",
     "extra": {
-      "SUPABASE_URL": "REPLACE_WITH_YOUR_SUPABASE_URL",
-      "SUPABASE_ANON_KEY": "REPLACE_WITH_YOUR_SUPABASE_ANON_KEY"
+      "SUPABASE_URL": "https://lvebhpkdvvbxrvdbptfc.supabase.co",
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2ZWJocGtkdnZieHJ2ZGJwdGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NzcyNjAsImV4cCI6MjA3NzQ1MzI2MH0.FigoSpkJg93ZQgvFumNGUUKex7E6R56d8lp4ZfKtrvw"
     }
   }
 }
