@@ -1,5 +1,5 @@
 from PIL import Image, UnidentifiedImageError
-import os, sys, traceback
+import os, sys
 
 bad = []
 for root, dirs, files in os.walk('.'):
@@ -10,7 +10,7 @@ for root, dirs, files in os.walk('.'):
                 with Image.open(path) as im:
                     im.verify()
             except Exception as e:
-                bad.append((path, repr(e)))
+                bad.append((path, str(e)))
 if not bad:
     print("No problematic images found.")
 else:
