@@ -1,16 +1,19 @@
 // app.config.js
-try { require('dotenv').config(); } catch (e) { /* dotenv optional */ }
+// Safe dynamic config for Expo/EAS. Replace the ALL-CAPS placeholders below.
+try { require('dotenv').config(); } catch (e) { /* optional */ }
 
 const {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   APP_NAME = 'Desk Reset',
   SLUG = 'desk-reset-app',
-  ANDROID_PACKAGE = 'com.yourcompany.deskreset',    // <-- REPLACE this
-  IOS_BUNDLE_ID = 'com.yourcompany.deskreset'      // <-- REPLACE this
+  ANDROID_PACKAGE = 'com.simonblue003.physo',      // <-- REPLACE with your package id
+  IOS_BUNDLE_ID = 'com.simonblue003.physo',       // <-- REPLACE with your bundle id
+  EAS_PROJECT_ID = '8323ca4c-dacc-46b4-ac00-23e46fcbced8' // <-- keep or replace with your projectId
 } = process.env;
 
-module.exports = ({ config }) ; {
+module.exports = ({ config }) => {
+  // Use the incoming `config` only inside this function scope
   return {
     ...config,
     name: APP_NAME,
@@ -18,17 +21,16 @@ module.exports = ({ config }) ; {
     version: '0.1.0',
     extra: {
       ...(config.extra || {}),
-      // <-- ADD THE EAS PROJECT ID you copied from `npx eas project:init` or expo.dev
-      eas: {
-        projectId: '8323ca4c-dacc-46b4-ac00-23e46fcbced8'   
-      },
-      SUPABASE_URL: process.env.SUPABASE_URL || (config.extra && config.extra.SUPABASE_URL),
-      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || (config.extra && config.extra.SUPABASE_ANON_KEY),
+      eas: { projectId: EAS_PROJECT_ID },
+      SUPABASE_URL: SUPABASE_URL || (config.extra && config.extra.SUPABASE_URL) || '',
+      SUPABASE_ANON_KEY: SUPABASE_ANON_KEY || (config.extra && config.extra.SUPABASE_ANON_KEY) || ''
     },
     ios: {
+      ...(config.ios || {}),
       bundleIdentifier: IOS_BUNDLE_ID
     },
     android: {
+      ...(config.android || {}),
       package: ANDROID_PACKAGE,
       adaptiveIcon: config.android?.adaptiveIcon || {
         foregroundImage: './assets/adaptive-icon.png',
@@ -40,7 +42,8 @@ module.exports = ({ config }) ; {
       'expo-secure-store'
     ],
     web: {
-      favicon: './assets/favicon.png'
+      ...(config.web || {}),
+      favicon: config.web?.favicon || './assets/favicon.png'
     }
   };
 };
