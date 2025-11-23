@@ -1,4 +1,4 @@
-﻿{
+{
   "expo": {
     "name": "Desk Reset",
     "slug": "desk-reset",
@@ -12,6 +12,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.yourcompany.deskreset"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ec60ae2e-cef0-40bb-8cd4-b51730bf5998"
+      }
     }
   }
 }
