@@ -1,14 +1,4 @@
 // src/screens/ExercisesScreen.jsx
-// Insert at top of component while testing
-const testItem = {
-  id: 'test-1',
-  title: 'Test Video',
-  description: 'Quick test',
-  image_url: 'https://your-cdn-or-placeholder/image.png',
-  video_url: 'https://www.w3schools.com/html/mov_bbb.mp4' // public mp4 for testing
-};
-setExercises([testItem]);
-setLoading(false);
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
