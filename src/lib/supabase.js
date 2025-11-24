@@ -1,14 +1,17 @@
 // src/lib/supabase.js
+import Constants from 'expo-constants';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.SUPABASE_URL || (global?.__supabase_url__);
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || (global?.__supabase_anon_key__);
+const publicUrl = process.env.EXPO_PUBLIC_SUPABASE_URL
+  ?? Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL
+  ?? Constants.manifest?.extra?.EXPO_PUBLIC_SUPABASE_URL;
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.warn('Missing Supabase keys: make sure SUPABASE_URL and SUPABASE_ANON_KEY are provided.');
+const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+  ?? Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY
+  ?? Constants.manifest?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!publicUrl || !anonKey) {
+  console.warn('Missing Supabase config. Set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY');
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  // disable local persistence for simple usage
-  auth: { persistSession: false }
-});
+export const supabase = createClient(publicUrl || '', anonKey || '');
