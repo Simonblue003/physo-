@@ -1,10 +1,8 @@
-export default ({ config }) => {
-  return {
-    ...config,
-    extra: {
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-    },
-  };
-};
-
+export default ({ config }) => ({
+  ...config,
+  extra: {
+    eas: {
+      projectId: 'ec60ae2e-cef0-40bb-8cd4-b51730bf5998'
+    }
+  }
+});
