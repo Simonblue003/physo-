@@ -1,8 +1,11 @@
 {
   "expo": {
-    "name": "desk-reset",
+    "name": "Desk Reset",
     "slug": "desk-reset",
     "owner": "martiankings",
+    "android": {
+      "package": "com.martiankings.deskreset"
+    },
     "extra": {
       "eas": {
         "projectId": "ec60ae2e-cef0-40bb-8cd4-b51730bf5998"
