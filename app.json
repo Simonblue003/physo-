@@ -1,18 +1,8 @@
 {
   "expo": {
-    "name": "Desk Reset",
+    "name": "desk-reset",
     "slug": "desk-reset",
-    "splash": {
-      "image": "./assets/splash.png",
-      "backgroundColor": "#FFFFFF",
-      "resizeMode": "contain"
-    },
-    "android": {
-      "package": "com.yourcompany.deskreset"
-    },
-    "ios": {
-      "bundleIdentifier": "com.yourcompany.deskreset"
-    },
+    "owner": "martiankings",
     "extra": {
       "eas": {
         "projectId": "ec60ae2e-cef0-40bb-8cd4-b51730bf5998"
