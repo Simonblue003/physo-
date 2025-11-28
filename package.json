@@ -26,6 +26,7 @@
     "react-native-screens": "~3.29.0"
   },
   "devDependencies": {
+    "@expo/config-plugins": "^54.0.2",
     "eslint": "^8.50.0"
   }
 }
