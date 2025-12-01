@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
-import VideoModal from '../components/VideoModal';
+import VideoModalRN from '../components/VideoModalRN';
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null); // exercise selected (object)
+  const [selected, setSelected] = useState(null); // { item, videoUrl }
+  const [modalVisible, setModalVisible] = useState(false);
+  const [resolvingVideo, setResolvingVideo] = useState(false);
 
   useEffect(() => {
     loadExercises();
@@ -17,9 +19,8 @@ export default function ExercisesScreen() {
   async function loadExercises() {
     setLoading(true);
     try {
-      // Adjust select columns to your schema (title or name)
       const { data, error } = await supabase
-        .from('exercises') // or 'physio_exercises' depending on tab
+        .from('exercises')
         .select(`
           id,
           title,
@@ -38,10 +39,9 @@ export default function ExercisesScreen() {
         console.error('supabase fetch error', error);
         Alert.alert('Data error', error.message || 'Failed to load exercises');
       } else {
-        // Map back to fields you use: prefer title then name
         const normalized = (data || []).map(row => ({
           id: row.id,
-          title: row.title ?? row.name ?? row.slug ?? 'Untitled',
+          title: row.title ?? row.name ?? 'Untitled',
           description: row.description ?? '',
           image_url: row.image_url ?? null,
           video_url: row.video_url ?? null,
@@ -57,12 +57,73 @@ export default function ExercisesScreen() {
     }
   }
 
-  function onPressExercise(item) {
-    if (!item.video_url) {
-      Alert.alert('No demo video', 'This exercise has no demo video URL.');
-      return;
+  // helper: fetch primary video asset from exercise_assets for an exercise id
+  async function fetchPrimaryAssetUrlForExercise(exerciseId) {
+    try {
+      const { data, error } = await supabase
+        .from('exercise_assets')
+        .select('id, exercise_id, asset_type, url, filename, mime, is_primary, metadata')
+        .eq('exercise_id', exerciseId)
+        .eq('asset_type', 'video')
+        .order('is_primary', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.warn('asset fetch error', error);
+        return null;
+      }
+      const asset = (data && data[0]) || null;
+      if (!asset) return null;
+
+      // Prefer full public URL if present
+      if (asset.url && asset.url.startsWith('http')) return asset.url;
+
+      // If asset.url is a storage path or filename, attempt to build public URL using bucket in metadata
+      const bucket = asset.metadata?.bucket || asset.metadata?.storage_bucket || null;
+      const path = asset.url || asset.filename || null;
+      if (bucket && path) {
+        // Make sure your bucket is public; this is the public object URL format for Supabase storage:
+        // https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
+        const supabaseUrl = supabase?.supabaseUrl || null; // supabase client exposes this
+        if (supabaseUrl) {
+          return `${supabaseUrl.replace(/\/$/, '')}/storage/v1/object/public/${bucket}/${encodeURIComponent(path)}`;
+        }
+        // fallback: return path (unlikely to work)
+        return path;
+      }
+
+      return null;
+    } catch (err) {
+      console.error('fetchPrimaryAssetUrlForExercise err', err);
+      return null;
     }
-    setSelected(item);
+  }
+
+  async function onPressExercise(item) {
+    setResolvingVideo(true);
+    try {
+      // If exercise row already has a video_url, use it
+      if (item.video_url && item.video_url.startsWith('http')) {
+        setSelected({ item, videoUrl: item.video_url });
+        setModalVisible(true);
+        return;
+      }
+
+      // Otherwise try to fetch from exercise_assets
+      const url = await fetchPrimaryAssetUrlForExercise(item.id);
+      if (!url) {
+        Alert.alert('No demo video', 'This exercise has no demo video URL or the asset was not found.');
+        return;
+      }
+
+      setSelected({ item, videoUrl: url });
+      setModalVisible(true);
+    } catch (err) {
+      console.error('onPressExercise err', err);
+      Alert.alert('Error', 'Failed to resolve video for this exercise.');
+    } finally {
+      setResolvingVideo(false);
+    }
   }
 
   return (
@@ -105,13 +166,24 @@ export default function ExercisesScreen() {
         </>
       )}
 
-      {/* Video modal */}
-      <VideoModal
-        visible={!!selected}
-        videoUrl={selected?.video_url}
-        title={selected?.title}
-        onClose={() => setSelected(null)}
+      {/* Video modal (native) */}
+      <VideoModalRN
+        visible={modalVisible}
+        videoUrl={selected?.videoUrl}
+        title={selected?.item?.title}
+        onClose={() => {
+          setModalVisible(false);
+          setSelected(null);
+        }}
       />
+
+      {/* small loader when resolving video */}
+      {resolvingVideo && (
+        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 40, alignItems: 'center' }}>
+          <ActivityIndicator size="small" color="#2563eb" />
+          <Text style={{ marginTop: 6 }}>Resolving video…</Text>
+        </View>
+      )}
     </View>
   );
 }
