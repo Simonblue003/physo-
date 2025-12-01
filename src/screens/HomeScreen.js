@@ -1,70 +1,65 @@
 // src/screens/HomeScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
-import { supabase } from '../lib/supabase';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import { supabase } from '../supabaseClient';
 
-export default function HomeScreen() {
-  const nav = useNavigation();
-  const [loading, setLoading] = useState(true);
-  const [exercises, setExercises] = useState([]);
+const durations = [3, 5, 8];
+
+export default function HomeScreen({ navigation }) {
+  const [loading, setLoading] = useState(false);
+  const [templates, setTemplates] = useState([]);
 
   useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        // Select only the columns you have: title/description/video_url/image_url/rep_range etc
-        const { data, error } = await supabase
-          .from('exercises')
-          .select('id,title,description,video_url,image_url,rep_range')
-          .eq('is_active', true)
-          .order('title', { ascending: true });
-
-        console.log('supabase exercises', { data, error });
-        if (error) {
-          console.error(error);
-          Alert.alert('Error loading exercises', error.message || String(error));
-        } else if (mounted) {
-          setExercises(data || []);
-        }
-      } catch (err) {
-        console.error('fetch failed', err);
-        Alert.alert('Fetch failed', String(err));
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-    load();
-    return () => { mounted = false; };
+    loadTemplates();
   }, []);
 
-  if (loading) return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><ActivityIndicator /></View>;
+  async function loadTemplates() {
+    setLoading(true);
+    try {
+      // session_templates should have a column like duration_minutes or slug
+      const { data, error } = await supabase
+        .from('session_templates')
+        .select('*')
+        .order('duration_minutes', { ascending: true });
 
-  if (!exercises.length) return (
-    <View style={{flex:1, padding:20}}>
-      <Text style={{fontSize:20, marginBottom:12}}>No exercises found</Text>
-    </View>
-  );
+      if (error) throw error;
+      setTemplates(data || []);
+    } catch (err) {
+      console.warn('Failed to load templates', err.message || err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function start(duration) {
+    // find appropriate template row by duration (fallback: send duration only)
+    const tpl = templates.find(t => Number(t.duration_minutes) === Number(duration));
+    navigation.navigate('Session', { duration, templateId: tpl?.id ?? null });
+  }
 
   return (
-    <View style={{flex:1, padding:16}}>
-      <Text style={{fontSize:28,fontWeight:'700', textAlign:'center', marginBottom:8}}>Desk Reset</Text>
-      <FlatList
-        data={exercises}
-        keyExtractor={(i)=>i.id}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() => nav.navigate('Session', { exercise: item })}
-            style={{flexDirection:'row', padding:12, marginVertical:8, borderRadius:10, backgroundColor:'#fff', elevation:1}}
-          >
-            <Image source={{ uri: item.image_url || undefined }} style={{width:100,height:70,borderRadius:6,backgroundColor:'#eee'}}/>
-            <View style={{flex:1, paddingLeft:12, justifyContent:'center'}}>
-              <Text style={{fontWeight:'700'}}>{item.title}</Text>
-              <Text numberOfLines={2} style={{color:'#666', marginTop:4}}>{item.description}</Text>
-            </View>
+    <SafeAreaView style={{flex:1, padding:20}}>
+      <Text style={styles.title}>Desk Reset</Text>
+      <Text style={styles.sub}>Quick 3 / 5 / 8 minute workouts</Text>
+
+      <View style={{ flexDirection:'row', marginTop:20, justifyContent: 'space-between' }}>
+        {durations.map(d => (
+          <TouchableOpacity key={d} style={styles.button} onPress={() => start(d)}>
+            <Text style={styles.buttonText}>Start {d}m</Text>
           </TouchableOpacity>
-        )}
-      />
-    </View>
+        ))}
+      </View>
+
+      <View style={{ marginTop: 24 }}>
+        {loading ? <ActivityIndicator /> : <Text style={{textAlign:'center'}}>Status: {templates.length ? `Loaded ${templates.length} templates` : 'No templates found'}</Text>}
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  title: { fontSize:32, fontWeight:'700', textAlign:'center', marginTop:8 },
+  sub: { textAlign:'center', color:'#666', marginTop:4 },
+  button: { backgroundColor:'#2b82ff', paddingVertical:14, paddingHorizontal:22, borderRadius:12, minWidth:100, alignItems:'center' },
+  buttonText: { color:'#fff', fontWeight:'700' }
+});
