@@ -1,0 +1,2 @@
+Scan started: mode=full
+Scan finished. Found=0
