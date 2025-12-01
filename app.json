@@ -9,7 +9,9 @@
     "extra": {
       "eas": {
         "projectId": "ec60ae2e-cef0-40bb-8cd4-b51730bf5998"
-      }
+      },
+      "supabaseUrl": "https://lvebhpkdvvbxrvdbptfc.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2ZWJocGtkdnZieHJ2ZGJwdGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NzcyNjAsImV4cCI6MjA3NzQ1MzI2MH0.FigoSpkJg93ZQgvFumNGUUKex7E6R56d8lp4ZfKtrvw"
     }
   }
 }
