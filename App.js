@@ -4,6 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen';
 import SessionScreen from './src/screens/SessionScreen';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Setting a timer']); // optional
 
 const Stack = createNativeStackNavigator();
 
