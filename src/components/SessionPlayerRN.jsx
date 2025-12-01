@@ -5,8 +5,8 @@ import { Video } from 'expo-av'
 import { createClient } from '@supabase/supabase-js'
 
 // --- Setup supabase client (anon key) ---
-const SUPABASE_URL = '<YOUR_SUPABASE_URL>' // e.g. https://lvebhpkdvvbxrvdbptfc.supabase.co
-const SUPABASE_ANON_KEY = '<YOUR_ANON_KEY>' // put your anon key here (safe for read)
+const SUPABASE_URL = 'https://lvebhpkdvvbxrvdbptfc.supabase.co' // e.g. https://lvebhpkdvvbxrvdbptfc.supabase.co
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2ZWJocGtkdnZieHJ2ZGJwdGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NzcyNjAsImV4cCI6MjA3NzQ1MzI2MH0.FigoSpkJg93ZQgvFumNGUUKex7E6R56d8lp4ZfKtrvw' // put your anon key here (safe for read)
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 /*
